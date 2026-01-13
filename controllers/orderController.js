@@ -3,7 +3,7 @@ const { Order, OrderItem, Product } = require('../models');
 // CREATE an order
 exports.createOrder = async (req, res) => {
   try {
-    const { customer_name, email, address, products } = req.body;
+     const { customer_name, email, mobile, address, products } = req.body;
 
     if (!products || products.length === 0) {
       return res.status(400).json({ success: false, message: "No products in order" });
