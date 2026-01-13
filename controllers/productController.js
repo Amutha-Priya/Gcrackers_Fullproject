@@ -18,9 +18,13 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-// CREATE product
+// CREATE product// CREATE product
 exports.createProduct = async (req, res) => {
   try {
+    if (req.file) {
+      req.body.Product_image = `/uploads/${req.file.filename}`; // relative URL for frontend
+    }
+
     const product = await Product.create(req.body);
     res.status(201).json({
       success: true,
@@ -35,21 +39,10 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-exports.createMultipleProducts = async (req, res) => {
-  try {
-    const products = await Product.bulkCreate(req.body);
-    res.status(201).json({
-      success: true,
-      data: products,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+// UPDATE product
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-
     const {
       Product_name,
       Product_name_tamil,
@@ -58,14 +51,11 @@ exports.updateProduct = async (req, res) => {
     } = req.body;
 
     const product = await Product.findByPk(id);
-
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
+    if (!product) return res.status(404).json({ message: "Product not found" });
 
     // If new image uploaded, update it
     if (req.file) {
-      product.Product_image = req.file.path;
+      product.Product_image = `/uploads/${req.file.filename}`; // fix here
     }
 
     product.Product_name = Product_name;
@@ -84,6 +74,7 @@ exports.updateProduct = async (req, res) => {
     res.status(500).json({ message: "❌ Update failed" });
   }
 };
+// DELETE product
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
