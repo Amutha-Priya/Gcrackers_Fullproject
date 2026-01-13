@@ -1,16 +1,19 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var productcontroller=require('../controllers/productcontroller')
+var productcontroller = require("../controllers/productcontroller");
+const upload = require("../middleware/upload"); // your multer setup
 
+// GET all products
+router.get("/", productcontroller.getAllProducts);
 
-// router.get('/',function(req,res)    {
-//     res.send("I m in product")
-//     console.log("hi");
-    
-// });
+// ADD product
+router.post("/", upload.single("Product_image"), productcontroller.createProduct);
 
-router.get('/',productcontroller.getAllProducts)
-router.post('/',productcontroller.createProduct)
+// UPDATE product
+
+router.put("/:id", upload.single("Product_image"), productcontroller.updateProduct);
+
+// DELETE product
+router.delete("/:id", productcontroller.deleteProduct);
 
 module.exports = router;
-
