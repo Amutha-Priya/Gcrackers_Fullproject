@@ -22,7 +22,7 @@ exports.getAllProducts = async (req, res) => {
 exports.createProduct = async (req, res) => {
   try {
     if (req.file) {
-      req.body.Product_image = `/uploads/${req.file.filename}`; // relative URL for frontend
+      req.body.Product_image = `/images/${req.file.filename}`; // relative URL for frontend
     }
 
     const product = await Product.create(req.body);
@@ -42,38 +42,39 @@ exports.createProduct = async (req, res) => {
 // UPDATE product
 exports.updateProduct = async (req, res) => {
   try {
-    const { id } = req.params;
-    const {
-      Product_name,
-      Product_name_tamil,
-      Product_price,
-      Product_category,
-    } = req.body;
+    console.log("BODY 👉", req.body);
+    console.log("FILE 👉", req.file);
 
-    const product = await Product.findByPk(id);
-    if (!product) return res.status(404).json({ message: "Product not found" });
+    const product = await Product.findByPk(req.params.id);
 
-    // If new image uploaded, update it
-    if (req.file) {
-      product.Product_image = `/uploads/${req.file.filename}`; // fix here
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
     }
 
-    product.Product_name = Product_name;
-    product.Product_name_tamil = Product_name_tamil;
-    product.Product_price = Product_price;
-    product.Product_category = Product_category;
+    // ✅ update image ONLY if new image uploaded
+    if (req.file) {
+      product.Product_image = `/images/${req.file.filename}`;
+    }
+    // ❗ else DO NOTHING → keep old image (even if null)
+
+    product.Product_name = req.body.Product_name;
+    product.Product_name_tamil = req.body.Product_name_tamil;
+    product.Product_price = req.body.Product_price;
+    product.Product_category = req.body.Product_category;
 
     await product.save();
 
     res.status(200).json({
-      message: "✅ Product updated successfully",
+      success: true,
+      message: "Product updated successfully",
       data: product,
     });
   } catch (error) {
-    console.error("Update error:", error);
-    res.status(500).json({ message: "❌ Update failed" });
+    console.error("UPDATE ERROR ❌", error);
+    res.status(500).json({ error: error.message });
   }
 };
+
 // DELETE product
 exports.deleteProduct = async (req, res) => {
   try {

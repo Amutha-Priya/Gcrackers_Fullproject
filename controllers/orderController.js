@@ -10,7 +10,7 @@ exports.createOrder = async (req, res) => {
     }
 
     // 1️⃣ Create order (customer info)
-    const order = await Order.create({ customer_name, email, address });
+    const order = await Order.create({ customer_name, email, mobile,address });
 
     // 2️⃣ Create OrderItems for each product
     const items = await Promise.all(

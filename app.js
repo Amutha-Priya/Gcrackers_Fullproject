@@ -13,9 +13,16 @@ var orderRouter = require('./routes/order');
 var app = express();
 
 /* 🔥 CORS MUST COME FIRST */
-app.use(cors({
-  origin: "http://localhost:3001"
-}));
+// const cors = require("cors");
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  })
+);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,7 +34,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // Serve uploads folder as static so images are accessible
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/images', express.static(path.join(__dirname, 'uploads')));
 
 /* ROUTES */
 app.use('/', indexRouter);

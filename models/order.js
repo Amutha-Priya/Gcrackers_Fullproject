@@ -17,10 +17,11 @@ module.exports = (sequelize, DataTypes) => {
   Order.init({
     customer_name: DataTypes.STRING,
     email: DataTypes.STRING,
+     mobile: DataTypes.STRING, 
     address: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Order',
   });
   return Order;
-};
+}
