@@ -3,14 +3,14 @@ const { Order, OrderItem, Product } = require('../models');
 // CREATE an order
 exports.createOrder = async (req, res) => {
   try {
-     const { customer_name, email, mobile, address, products } = req.body;
+     const { customer_name, email,mobile, address, products } = req.body;
 
     if (!products || products.length === 0) {
       return res.status(400).json({ success: false, message: "No products in order" });
     }
 
     // 1️⃣ Create order (customer info)
-    const order = await Order.create({ customer_name, email, mobile,address });
+    const order = await Order.create({ customer_name, mobile,email,address });
 
     // 2️⃣ Create OrderItems for each product
     const items = await Promise.all(
