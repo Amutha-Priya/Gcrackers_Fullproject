@@ -3,19 +3,25 @@ const { Order, OrderItem, Product } = require('../models');
 // CREATE an order
 exports.createOrder = async (req, res) => {
   try {
-     const { customer_name, email,mobile, address, products } = req.body;
+      console.log("REQ BODY 👉", req.body);
+    const { customer_name, email, mobile, address, products } = req.body;
+      console.log("MOBILE 👉", mobile);
 
     if (!products || products.length === 0) {
-      return res.status(400).json({ success: false, message: "No products in order" });
+      return res
+        .status(400)
+        .json({ success: false, message: "No products in order" });
     }
 
-    // 1️⃣ Create order (customer info)
-    const order = await Order.create({ customer_name, mobile,email,address });
+    const order = await Order.create({
+      customer_name,
+      email,
+      mobile,
+      address,
+    });
 
-    // 2️⃣ Create OrderItems for each product
-    const items = await Promise.all(
+    await Promise.all(
       products.map(async (productId) => {
-        // fetch product price from Product table
         const product = await Product.findByPk(productId);
         if (!product) throw new Error(`Product ID ${productId} not found`);
 
@@ -30,24 +36,31 @@ exports.createOrder = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Order created successfully",
-      orderId: order.id,
-      items: items.length,
+      id: order.id, // ✅ frontend-friendly
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json({ success: false, message: error.message });
   }
 };
+
 
 // GET all orders with products
 exports.getOrders = async (req, res) => {
   try {
     const orders = await Order.findAll({
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: OrderItem,
           as: "items",
-          include: [{ model: Product }],
+          include: [
+            {
+              model: Product, // ✅ THIS FIXES Product: null
+            },
+          ],
         },
       ],
     });
@@ -55,6 +68,9 @@ exports.getOrders = async (req, res) => {
     return res.json({ success: true, data: orders });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, message: error.message });
+    return res
+      .status(500)
+      .json({ success: false, message: error.message });
   }
 };
+
