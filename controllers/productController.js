@@ -96,3 +96,24 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ message: "❌ Delete failed" });
   }
 };
+
+exports.fixOldImagePaths = async (req, res) => {
+  try {
+    const products = await Product.findAll();
+
+    for (let product of products) {
+      if (
+        product.Product_image &&
+        !product.Product_image.startsWith("/images/")
+      ) {
+        product.Product_image = `/images/${product.Product_image}`;
+        await product.save();
+      }
+    }
+
+    res.json({ message: "Old image paths fixed ✅" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+

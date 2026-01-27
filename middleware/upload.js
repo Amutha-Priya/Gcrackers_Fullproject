@@ -1,11 +1,20 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 // Set storage engine
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // cb(null, "uploads/"); // Make sure this folder exists
-      cb(null, "images"); // ✅ backend/images
+    // Use a single uploads directory (matches app.js static mapping)
+    const uploadDir = path.join(__dirname, "..", "images");
+    // Ensure directory exists (multer won't create nested folders for us)
+    try {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    } catch (err) {
+      // ignore EEXIST and rethrow other errors
+      if (err.code !== 'EEXIST') return cb(err);
+    }
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     cb(
