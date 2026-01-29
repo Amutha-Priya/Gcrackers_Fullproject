@@ -1,4 +1,6 @@
 const { Order, OrderItem, Product } = require('../models');
+const generateOrderPDF = require("../utils/generateOrderPDF");
+const sendWhatsapp = require("../utils/sendWhatsapp");
 
 // CREATE an order
 exports.createOrder = async (req, res) => {
@@ -32,6 +34,20 @@ exports.createOrder = async (req, res) => {
         });
       })
     );
+
+    // 🔥 Generate PDF
+    const pdf = await generateOrderPDF({
+      orderId: order.id,
+      customer_name,
+      mobile,
+      address,
+    });
+
+    // 🔥 Send PDF to admin WhatsApp
+    await sendWhatsapp({
+      orderId: order.id,
+      pdfUrl: pdf.publicUrl,
+    });
 
     return res.status(201).json({
       success: true,
