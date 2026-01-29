@@ -15,8 +15,5 @@ router.put("/:id", upload.single("Product_image"), productcontroller.updateProdu
 
 // DELETE product
 router.delete("/:id", productcontroller.deleteProduct);
-// FIX old image paths
-router.get("/fix-image-paths", productcontroller.fixOldImagePaths);
-
 
 module.exports = router;
