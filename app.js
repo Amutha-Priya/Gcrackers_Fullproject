@@ -36,6 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Serve uploads folder as static so images are accessible
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use("/api/admin", require("./routes/admin"));
+
 
 /* ROUTES */
 app.use('/', indexRouter);
