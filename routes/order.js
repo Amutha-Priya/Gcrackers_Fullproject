@@ -7,6 +7,7 @@ const adminAuth = require("../middleware/adminAuth");
 router.post('/', orderController.createOrder);
 
 // GET /order → get all orders with products
-router.get('/',orderController.getOrders);
+router.get('/', adminAuth, orderController.getOrders);
+
 
 module.exports = router;

@@ -1,3 +1,4 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -9,6 +10,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productRouter = require('./routes/product');
 var orderRouter = require('./routes/order');
+var adminRouter = require("./routes/admin");
+
 
 var app = express();
 
@@ -36,7 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Serve uploads folder as static so images are accessible
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/images", express.static(path.join(__dirname, "public/images")));
-app.use("/api/admin", require("./routes/admin"));
+
 
 
 /* ROUTES */
@@ -44,6 +47,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/product', productRouter);
 app.use('/order', orderRouter);
+app.use("/api/admin", adminRouter);
 
 // catch 404
 app.use(function(req, res, next) {
