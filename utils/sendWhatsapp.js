@@ -8,7 +8,7 @@ const client = new twilio(
 module.exports = async ({ pdfUrl, orderId }) => {
   await client.messages.create({
     from: "whatsapp:+14155238886", // Twilio sandbox
-    to: "whatsapp:+91XXXXXXXXXX", // ADMIN NUMBER
+    to: "whatsapp:+91 8754883610", // ADMIN NUMBER
     body: `🧾 New Order Received\nOrder ID: ${orderId}`,
     mediaUrl: [pdfUrl], // ✅ PDF ATTACHMENT
   });
