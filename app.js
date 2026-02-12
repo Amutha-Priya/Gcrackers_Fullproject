@@ -17,10 +17,14 @@ var app = express();
 
 /* 🔥 CORS MUST COME FIRST */
 // const cors = require("cors");
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  process.env.ADMIN_URL,
+].filter(Boolean); //
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+     origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   })
